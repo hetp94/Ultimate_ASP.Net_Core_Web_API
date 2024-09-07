@@ -1,3 +1,4 @@
+using Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ultimate_ASP.Net_Core_Web_API.Controllers
@@ -6,22 +7,27 @@ namespace Ultimate_ASP.Net_Core_Web_API.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+       
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private ILoggerManager _loggerManager;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, ILoggerManager loggerManager)
         {
             _logger = logger;
+            _loggerManager = loggerManager;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            _loggerManager.LogInfo("Here is info message from our values controller");
+
+            return Enumerable.Range(1, 7).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
