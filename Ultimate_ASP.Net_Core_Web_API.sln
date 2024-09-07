@@ -5,9 +5,13 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ultimate_ASP.Net_Core_Web_API", "Ultimate_ASP.Net_Core_Web_API\Ultimate_ASP.Net_Core_Web_API.csproj", "{B4FD75B1-CC9B-47FD-A017-F260B62DECB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{0911582C-2688-4E94-B6FA-6668B64FE17C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Contracts.csproj", "{0911582C-2688-4E94-B6FA-6668B64FE17C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerService", "LoggerService\LoggerService.csproj", "{36AEFC4B-80A9-4D4F-8082-E31B831157E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggerService", "LoggerService\LoggerService.csproj", "{36AEFC4B-80A9-4D4F-8082-E31B831157E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{1EB310F6-53D1-458F-95B4-2154254F6A37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{9A680E9D-2BD8-4E9B-92DA-9A716CDF3D4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{36AEFC4B-80A9-4D4F-8082-E31B831157E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36AEFC4B-80A9-4D4F-8082-E31B831157E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36AEFC4B-80A9-4D4F-8082-E31B831157E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EB310F6-53D1-458F-95B4-2154254F6A37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EB310F6-53D1-458F-95B4-2154254F6A37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EB310F6-53D1-458F-95B4-2154254F6A37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EB310F6-53D1-458F-95B4-2154254F6A37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A680E9D-2BD8-4E9B-92DA-9A716CDF3D4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A680E9D-2BD8-4E9B-92DA-9A716CDF3D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A680E9D-2BD8-4E9B-92DA-9A716CDF3D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A680E9D-2BD8-4E9B-92DA-9A716CDF3D4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
