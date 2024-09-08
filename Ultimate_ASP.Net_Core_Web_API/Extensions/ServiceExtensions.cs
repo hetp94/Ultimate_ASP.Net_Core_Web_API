@@ -1,5 +1,9 @@
 ﻿using Contracts;
 using LoggerService;
+using Microsoft.EntityFrameworkCore;
+using Repository;
+using Service;
+using Service.Contracts;
 
 namespace Ultimate_ASP.Net_Core_Web_API.Extensions
 {
@@ -26,5 +30,22 @@ namespace Ultimate_ASP.Net_Core_Web_API.Extensions
             services.AddSingleton<ILoggerManager, LoggerManager>();
         }
 
+        public static void ConfigureRepositoryManager(this IServiceCollection services)
+        {
+            services.AddTransient<IRepositoryManager, RepositoryManager>();
+        }
+
+        public static  void ConfigureServiceManager(this IServiceCollection services)
+        {
+            services.AddScoped<IServiceManager, ServiceManager>();
+        }
+
+        public static void ConfigureSQLContext(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<RepositoryContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("sqlConnection"));
+            });
+        }
     }
 }
