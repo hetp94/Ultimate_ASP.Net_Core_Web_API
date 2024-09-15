@@ -1,4 +1,5 @@
 
+using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 using Ultimate_ASP.Net_Core_Web_API.Extensions;
@@ -28,6 +29,8 @@ namespace Ultimate_ASP.Net_Core_Web_API
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+            var logger = app.Services.GetRequiredService<ILoggerManager>();
+            app.ConfigureExceptionHandler(logger);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

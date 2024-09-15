@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using System;
 using System.Collections.Generic;
@@ -22,15 +23,15 @@ namespace CompanyEmployees.Presentation.Controllers
         [HttpGet]
         public IActionResult GetCompanies()
         {
-            try
-            {
-                var companies = _serviceManager.CompanyService.GetAllCompanies(trackChanges: false);
-                return Ok(companies);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Internal Server Error");
-            }
+            var companies = _serviceManager.CompanyService.GetAllCompanies(trackChanges: false);
+            return Ok(companies);
+        }
+
+        [HttpGet("{id:guid}")]
+        public IActionResult GetCompany(Guid id)
+        {
+            var company = _serviceManager.CompanyService.GetCompany(id, trackChanges: false);
+            return Ok(company);
         }
     }
 }
