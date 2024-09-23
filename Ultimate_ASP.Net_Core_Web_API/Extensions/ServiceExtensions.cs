@@ -35,7 +35,7 @@ namespace Ultimate_ASP.Net_Core_Web_API.Extensions
             services.AddTransient<IRepositoryManager, RepositoryManager>();
         }
 
-        public static  void ConfigureServiceManager(this IServiceCollection services)
+        public static void ConfigureServiceManager(this IServiceCollection services)
         {
             services.AddScoped<IServiceManager, ServiceManager>();
         }
@@ -46,6 +46,11 @@ namespace Ultimate_ASP.Net_Core_Web_API.Extensions
             {
                 options.UseSqlServer(configuration.GetConnectionString("sqlConnection"));
             });
+        }
+
+        public static IMvcBuilder AddCustomCSVFormatter(this IMvcBuilder builder)
+        {
+            return builder.AddMvcOptions(config => config.OutputFormatters.Add(new CsvOutputFormatter()));
         }
     }
 }
