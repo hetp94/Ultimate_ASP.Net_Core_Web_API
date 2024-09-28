@@ -1,6 +1,7 @@
 
 using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using NLog;
 using Ultimate_ASP.Net_Core_Web_API.Extensions;
 
@@ -20,6 +21,10 @@ namespace Ultimate_ASP.Net_Core_Web_API
             builder.Services.ConfigureRepositoryManager();
             builder.Services.ConfigureServiceManager();
             builder.Services.ConfigureSQLContext(builder.Configuration);
+            builder.Services.Configure<ApiBehaviorOptions>(option =>
+            {
+                option.SuppressModelStateInvalidFilter = true;
+            });
             builder.Services.AddControllers(config =>
             {
                 config.RespectBrowserAcceptHeader = true;

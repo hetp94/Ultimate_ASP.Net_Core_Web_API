@@ -27,6 +27,38 @@ namespace Service
             _mapper = mapper;
         }
 
+        public CompanyDto CreateCompany(CompanyForCreationDto company)
+        {
+            var companyEntity = _mapper.Map<Company>(company);
+            _repository.Company.CreateCompany(companyEntity);
+            _repository.Save();
+
+            var companyReturn = _mapper.Map<CompanyDto>(companyEntity);
+            return companyReturn;
+        }
+
+        public (IEnumerable<CompanyDto> companies, string ids) CreateCompanyCollection(IEnumerable<CompanyForCreationDto> companyCollaction)
+        {
+            if(companyCollaction == null)
+            {
+                throw new CompanyCollectionBadRequest();
+            }
+
+            var companyEntities = _mapper.Map<IEnumerable<Company>>(companyCollaction);
+
+            foreach(var companyEntity in companyEntities)
+            {
+                _repository.Company.CreateCompany(companyEntity);   
+            }
+            _repository.Save();
+
+            var companyCollectionReturn = _mapper.Map<IEnumerable<CompanyDto>>(companyEntities);
+
+            var ids = string.Join(",", companyCollectionReturn.Select(x=>x.Id));
+
+            return (companies: companyCollectionReturn, ids);
+        }
+
         public IEnumerable<CompanyDto> GetAllCompanies(bool trackChanges)
         {
             try
@@ -42,10 +74,26 @@ namespace Service
             }
         }
 
+        public IEnumerable<CompanyDto> GetByIds(IEnumerable<Guid> companyIds, bool trackChanges)
+        {
+            if (companyIds is null)
+            {
+                throw new IdParametersBadRequestException();
+            }
+
+            var companyEntities = _repository.Company.GetByIds(companyIds, trackChanges);
+            if (companyIds.Count() != companyEntities.Count())
+            {
+                throw new CollectionByIdsBadRequestException();
+            }
+
+            return _mapper.Map<IEnumerable<CompanyDto>>(companyEntities);
+        }
+
         public CompanyDto GetCompany(Guid companyId, bool trackChanges)
         {
             var company = _repository.Company.GetCompany(companyId, trackChanges);
-            if (company == null) 
+            if (company == null)
             {
                 throw new CompanyNotFoundException(companyId);
             }
