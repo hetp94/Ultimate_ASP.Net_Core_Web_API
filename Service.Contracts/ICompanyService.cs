@@ -12,5 +12,7 @@ namespace Service.Contracts
         IEnumerable<CompanyDto> GetByIds(IEnumerable<Guid> companyIds, bool trackChanges);
 
         (IEnumerable<CompanyDto> companies, string ids) CreateCompanyCollection (IEnumerable<CompanyForCreationDto> companyCollaction);
+
+        void DeleteCompany(Guid companyId, bool trackChanges);
     }
 }

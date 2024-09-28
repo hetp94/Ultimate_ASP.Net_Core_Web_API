@@ -24,7 +24,7 @@ namespace Repository
 
         public void Delete(T entity)
         {
-            _repositoryContext.Set<T>().Update(entity);
+            _repositoryContext.Set<T>().Remove(entity);
         }
 
         public IQueryable<T> FindAll(bool trackChanges)
@@ -40,7 +40,7 @@ namespace Repository
 
         public void Update(T entity)
         {
-            _repositoryContext.Set<T>().Remove(entity);
+            _repositoryContext.Set<T>().Update(entity);
         }
     }
 }
