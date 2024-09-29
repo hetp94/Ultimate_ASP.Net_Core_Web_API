@@ -71,6 +71,24 @@ namespace Service
             return employee;
         }
 
+        public (EmployeeForUpdateDto employeePatch, Employee employeeEntrity) GetEmployeeForPatch(Guid companyId, Guid id, bool compTrackChanges, bool empTrackChanges)
+        {
+            Company company = _repository.Company.GetCompany(companyId, compTrackChanges);
+            if (company == null)
+            {
+                throw new CompanyNotFoundException(companyId);
+            }
+
+            Employee employeeEntity = _repository.Employee.GetEmployee(companyId, id, empTrackChanges);
+            if (employeeEntity == null)
+            {
+                throw new EmployeeNotFoundException(id);
+            }
+
+            EmployeeForUpdateDto employeeToPatch = _mapper.Map<EmployeeForUpdateDto>(employeeEntity);
+            return (employeeToPatch, employeeEntity);
+        }
+
         public IEnumerable<EmployeeDto> GetEmployees(Guid Id, bool trackChanges)
         {
             var company = _repository.Company.GetCompany(Id, trackChanges);
@@ -81,6 +99,12 @@ namespace Service
             var employeeesFromDb = _repository.Employee.GetEmployees(Id, trackChanges);
             var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employeeesFromDb);
             return employeesDto;
+        }
+
+        public void SaveChangedForPatch(EmployeeForUpdateDto employeeToPatch, Employee employeeEntity)
+        {
+            _mapper.Map(employeeToPatch, employeeEntity);
+            _repository.Save();
         }
 
         public void UpdateEmployeeForCompany(Guid companyId, Guid id, EmployeeForUpdateDto employeeForUpdateDto, bool compTrackChanges, bool empTrackChanges)
