@@ -48,5 +48,18 @@ namespace CompanyEmployees.Presentation.Controllers
 
             return NoContent();
         }
+        [HttpPut("{id:guid}")]
+        public IActionResult UpdateEmployeeForCompany(Guid companyId, Guid id, [FromBody] EmployeeForUpdateDto employee)
+        {
+            if (employee == null)
+            {
+                return BadRequest("EmployeeForUpdateDto object is null");
+            }
+
+            _serviceManager.EmployeeService.UpdateEmployeeForCompany(companyId, id,
+                employee, compTrackChanges: false, empTrackChanges: true);
+
+            return NoContent();
+        }
     }
 }
