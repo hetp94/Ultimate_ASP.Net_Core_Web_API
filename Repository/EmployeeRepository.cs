@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,9 +43,15 @@ namespace Repository
             return FindByCondition(x => x.CompanyId == companyId, trackChanges).OrderBy(x => x.Name).ToList();
         }
 
-        public async Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, bool trackChanges)
+        public async Task<PagedList<Employee>> GetEmployeesAsync(Guid companyId,
+            EmployeeParameters employeeParameters, bool trackChanges)
         {
-            return await FindByCondition(x => x.CompanyId == companyId, trackChanges).OrderBy(x => x.Name).ToListAsync();
+            var employees = await FindByCondition(x => x.CompanyId == companyId, trackChanges)
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+
+            return PagedList<Employee>.ToPagedList(employees, employeeParameters.PageNumber, employeeParameters.PageSize);
+
         }
     }
 }

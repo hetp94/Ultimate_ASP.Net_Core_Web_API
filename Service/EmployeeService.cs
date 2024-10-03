@@ -5,6 +5,7 @@ using Entities.Exceptions;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
+using Shared.RequestFeatures;
 
 namespace Service
 {
@@ -171,16 +172,13 @@ namespace Service
             return employeesDto;
         }
 
-        public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(Guid Id, bool trackChanges)
+        public async Task<(IEnumerable<EmployeeDto> employees, MetaData metaData)> GetEmployeesAsync
+            (Guid companyId, EmployeeParameters employeeParameters, bool trackChanges)
         {
-            var company = await _repository.Company.GetCompanyAsync(Id, trackChanges);
-            if (company == null)
-            {
-                throw new CompanyNotFoundException(Id);
-            }
-            var employeesFromDb = await _repository.Employee.GetEmployeesAsync(Id, trackChanges);
-            var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employeesFromDb);
-            return employeesDto;
+            await CheckIfCompanyExists(companyId, trackChanges);
+            var employeesWithMetaData = await _repository.Employee.GetEmployeesAsync(companyId, employeeParameters, trackChanges);
+            var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employeesWithMetaData);
+            return (employees: employeesDto, metaData: employeesWithMetaData.MetaData);
         }
 
         public void SaveChangedForPatch(EmployeeForUpdateDto employeeToPatch, Employee employeeEntity)
@@ -235,6 +233,13 @@ namespace Service
             _mapper.Map(employeeForUpdateDto, employeeEntity);
 
             await _repository.SaveAsync();
+        }
+
+        private async Task CheckIfCompanyExists(Guid companyId, bool trackChanges)
+        {
+            var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges);
+            if (company is null)
+                throw new CompanyNotFoundException(companyId);
         }
     }
 }
