@@ -15,5 +15,7 @@ namespace Shared.RequestFeatures
         {
             get { return MinAge <= MaxAge; }
         }
+
+        public string? SearchTerm { get; set; }
     }
 }
