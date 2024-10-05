@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using NLog;
+using Service.DataShaping;
+using Shared.DataTransferObjects;
 using Ultimate_ASP.Net_Core_Web_API.Extensions;
 
 namespace Ultimate_ASP.Net_Core_Web_API
@@ -39,6 +41,7 @@ namespace Ultimate_ASP.Net_Core_Web_API
                 .AddCustomCSVFormatter()
                 .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
             builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
