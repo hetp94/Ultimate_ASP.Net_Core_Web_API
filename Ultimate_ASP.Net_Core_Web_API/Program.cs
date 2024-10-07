@@ -44,9 +44,11 @@ namespace Ultimate_ASP.Net_Core_Web_API
             builder.Services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>();
 
             builder.Services.AddControllers();
+            builder.Services.ConfigureResponseCaching();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+           
 
             var app = builder.Build();
             var logger = app.Services.GetRequiredService<ILoggerManager>();
@@ -67,7 +69,7 @@ namespace Ultimate_ASP.Net_Core_Web_API
             app.UseStaticFiles();
             app.UseForwardedHeaders(new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.All });
             app.UseCors("CorsPolicy");
-
+            app.UseResponseCaching();
             app.UseAuthorization();
             // app.Run(async context => { await context.Response.WriteAsync("Hello from the middleware component."); });
             //app.Use(async (context, next) =>

@@ -52,5 +52,10 @@ namespace Ultimate_ASP.Net_Core_Web_API.Extensions
         {
             return builder.AddMvcOptions(config => config.OutputFormatters.Add(new CsvOutputFormatter()));
         }
+
+        public static void ConfigureResponseCaching(this IServiceCollection services)
+        {
+            services.AddResponseCaching();
+        }
     }
 }
