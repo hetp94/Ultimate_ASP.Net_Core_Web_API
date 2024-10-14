@@ -1,4 +1,5 @@
 
+using AspNetCoreRateLimit;
 using CompanyEmployees.Presentation.ActionFilters;
 using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -48,7 +49,9 @@ namespace Ultimate_ASP.Net_Core_Web_API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-           
+            builder.Services.AddMemoryCache();
+            builder.Services.ConfigureRateLimitingOptions(); 
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
             var logger = app.Services.GetRequiredService<ILoggerManager>();
@@ -68,6 +71,7 @@ namespace Ultimate_ASP.Net_Core_Web_API
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseForwardedHeaders(new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.All });
+            app.UseIpRateLimiting();
             app.UseCors("CorsPolicy");
             app.UseResponseCaching();
             app.UseAuthorization();
