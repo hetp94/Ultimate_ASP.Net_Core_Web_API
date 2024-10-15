@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using NLog;
 using Service.DataShaping;
 using Shared.DataTransferObjects;
@@ -48,10 +49,40 @@ namespace Ultimate_ASP.Net_Core_Web_API
             builder.Services.ConfigureResponseCaching();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter your bearer token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { 
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        }, 
+                        new string[] {} 
+                    }
+                });
+            });
+
             builder.Services.AddMemoryCache();
-            builder.Services.ConfigureRateLimitingOptions(); 
+            builder.Services.ConfigureRateLimitingOptions();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddAuthentication();
+            builder.Services.ConfigureIdentity();
+            builder.Services.ConfigureJWT(builder.Configuration);
 
             var app = builder.Build();
             var logger = app.Services.GetRequiredService<ILoggerManager>();
@@ -74,6 +105,7 @@ namespace Ultimate_ASP.Net_Core_Web_API
             app.UseIpRateLimiting();
             app.UseCors("CorsPolicy");
             app.UseResponseCaching();
+            app.UseAuthentication();
             app.UseAuthorization();
             // app.Run(async context => { await context.Response.WriteAsync("Hello from the middleware component."); });
             //app.Use(async (context, next) =>

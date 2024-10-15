@@ -16,6 +16,7 @@ namespace Ultimate_ASP.Net_Core_Web_API.Profile
             CreateMap<EmployeeForCreationDto, Employee>();
             CreateMap<EmployeeForUpdateDto, Employee>().ReverseMap();
             CreateMap<CompanyForUpdateDto, Company>();
+            CreateMap<UserForRegistrationDto, User>();
         }
     }
 }
