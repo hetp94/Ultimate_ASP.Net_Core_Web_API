@@ -50,9 +50,9 @@ namespace CompanyEmployees.Presentation.Controllers
                     return Unauthorized();
                 }
 
-                var token = await _service.AuthenticationService.CreateToken();
+                var tokenDto = await _service.AuthenticationService.CreateToken(populateExp: true);
 
-                return Ok(new { Token = token });
+                return Ok(tokenDto);
             }
             catch (DbException ex)
             {
