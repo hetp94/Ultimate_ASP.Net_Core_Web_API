@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.ConfigurationModels;
+using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -8,10 +10,8 @@ using Service.Contracts;
 using Shared.DataTransferObjects;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
-using Microsoft.Extensions.Configuration.Json;
 using System.Security.Cryptography;
-using Entities.Exceptions;
+using System.Text;
 
 
 namespace Service
@@ -23,14 +23,16 @@ namespace Service
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private User? _user;
+        private readonly JwtConfiguration _jwtConfiguration;
 
-        public AuthenticationService(ILoggerManager logger, IMapper mapper, UserManager<User> userManager,
-            IConfiguration configuration)
+        public AuthenticationService(UserManager<User> userManager, ILoggerManager logger, IMapper mapper, IConfiguration configuration)
         {
+            _userManager = userManager;
             _logger = logger;
             _mapper = mapper;
-            _userManager = userManager;
             _configuration = configuration;
+            _jwtConfiguration = new JwtConfiguration();
+            _configuration.Bind(_jwtConfiguration.Section, _jwtConfiguration);
         }
 
         public async Task<TokenDto> CreateToken(bool populateExp)
@@ -56,8 +58,6 @@ namespace Service
 
         private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
-
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateAudience = true,
@@ -66,8 +66,8 @@ namespace Service
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(_configuration.GetValue<string>("SECRET"))),
                 ValidateLifetime = true,
-                ValidIssuer = jwtSettings["validIssuer"],
-                ValidAudience = jwtSettings["validAudience"],
+                ValidIssuer = _jwtConfiguration.ValidIssuer,
+                ValidAudience = _jwtConfiguration.ValidAudience,
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -114,13 +114,12 @@ namespace Service
 
         private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
             var tokenOptions = new JwtSecurityToken
                 (
-                issuer: jwtSettings["validIssuer"],
-                audience: jwtSettings["validAudience"],
+                issuer: _jwtConfiguration.ValidIssuer,
+                audience: _jwtConfiguration.ValidAudience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["expires"])),
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_jwtConfiguration.Expires)),
                 signingCredentials: signingCredentials
                 );
             return tokenOptions;
@@ -153,11 +152,11 @@ namespace Service
 
         public async Task<TokenDto> RefreshToken(TokenDto tokenDto)
         {
-            var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken); 
-            var user = await _userManager.FindByNameAsync(principal.Identity.Name); 
-            if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now) 
-                throw new RefreshTokenBadRequest(); 
-            _user = user; 
+            var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
+            var user = await _userManager.FindByNameAsync(principal.Identity.Name);
+            if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+                throw new RefreshTokenBadRequest();
+            _user = user;
             return await CreateToken(populateExp: false);
         }
     }

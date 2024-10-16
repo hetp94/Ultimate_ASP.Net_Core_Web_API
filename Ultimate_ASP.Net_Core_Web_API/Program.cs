@@ -63,7 +63,7 @@ namespace Ultimate_ASP.Net_Core_Web_API
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    { 
+                    {
                         new OpenApiSecurityScheme
                         {
                             Reference = new OpenApiReference
@@ -71,8 +71,8 @@ namespace Ultimate_ASP.Net_Core_Web_API
                                 Type = ReferenceType.SecurityScheme,
                                 Id = "Bearer"
                             }
-                        }, 
-                        new string[] {} 
+                        },
+                        new string[] {}
                     }
                 });
             });
@@ -83,6 +83,7 @@ namespace Ultimate_ASP.Net_Core_Web_API
             builder.Services.AddAuthentication();
             builder.Services.ConfigureIdentity();
             builder.Services.ConfigureJWT(builder.Configuration);
+            builder.Services.AddJwtConfiguration(builder.Configuration);
 
             var app = builder.Build();
             var logger = app.Services.GetRequiredService<ILoggerManager>();
