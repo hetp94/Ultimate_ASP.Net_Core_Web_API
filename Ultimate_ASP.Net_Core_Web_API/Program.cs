@@ -1,5 +1,6 @@
 
 using AspNetCoreRateLimit;
+using CompanyEmployees.Presentation;
 using CompanyEmployees.Presentation.ActionFilters;
 using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -28,6 +29,7 @@ namespace Ultimate_ASP.Net_Core_Web_API
             builder.Services.ConfigureRepositoryManager();
             builder.Services.ConfigureServiceManager();
             builder.Services.ConfigureSQLContext(builder.Configuration);
+            builder.Services.AddHttpClient();
             builder.Services.Configure<ApiBehaviorOptions>(option =>
             {
                 option.SuppressModelStateInvalidFilter = true;
@@ -84,6 +86,7 @@ namespace Ultimate_ASP.Net_Core_Web_API
             builder.Services.ConfigureIdentity();
             builder.Services.ConfigureJWT(builder.Configuration);
             builder.Services.AddJwtConfiguration(builder.Configuration);
+            builder.Services.AddHttpClient<EmailService>();
 
             var app = builder.Build();
             var logger = app.Services.GetRequiredService<ILoggerManager>();

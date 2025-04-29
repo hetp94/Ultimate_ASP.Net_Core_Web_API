@@ -18,7 +18,7 @@ namespace Ultimate_ASP.Net_Core_Web_API.Extensions
                     context.Response.ContentType = "application/json";
 
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    if (contextFeature != null)
+                   if (contextFeature != null)
                     {
                         context.Response.StatusCode = contextFeature.Error switch
                         {
